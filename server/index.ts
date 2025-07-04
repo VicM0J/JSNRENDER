@@ -106,12 +106,11 @@ if (!global.serverStarted) {
     }
 
     // Iniciar servidor
-    const port = parseInt(process.env.PORT || "5000");
-    server.listen({
-      port,
-      host: "0.0.0.0",
-    }, () => {
+    const port = parseInt(process.env.PORT || "10000");
+    server.listen(port, "0.0.0.0", () => {
       log(`Servidor activo en http://0.0.0.0:${port}`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
     });
 
     // Handle server errors

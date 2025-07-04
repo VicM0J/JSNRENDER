@@ -49,10 +49,10 @@ export function setupAuth(app: Express) {
       createTableIfMissing: true 
     }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Render handles HTTPS termination
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+      sameSite: 'lax'
     },
   };
 
