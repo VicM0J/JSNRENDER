@@ -98,14 +98,14 @@ if (!global.serverStarted) {
         global.upgradeListenerAdded = true;
       }
 
-      // Servir archivos estáticos
-      const staticPath = path.resolve(import.meta.dirname, "../dist/public");
-      app.use(express.static(staticPath));
-
-      // Ruta catch-all para SPA
-      app.use("*", (_req, res) => {
-        res.sendFile(path.resolve(staticPath, "index.html"));
-      });
+      // Desarrollo vs Producción
+      if (process.env.NODE_ENV === "development") {
+        const { setupVite } = await import("./vite");
+        await setupVite(app, server);
+      } else {
+        const { serveStatic } = await import("./vite");
+        serveStatic(app);
+      }
 
       // Iniciar servidor
       const port = parseInt(process.env.PORT || "10000");
