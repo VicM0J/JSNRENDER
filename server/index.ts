@@ -99,7 +99,7 @@ if (!global.serverStarted) {
       }
 
       // Desarrollo vs Producción
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV !== "production") {
         const { setupVite } = await import("./vite");
         await setupVite(app, server);
       } else {
