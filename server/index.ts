@@ -1,8 +1,9 @@
+
 import express, { Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
 import { camelCaseResponseMiddleware } from './middlewares/camelCaseMiddleware';
 import { WebSocketServer } from 'ws';
+import path from "path";
 
 declare global {
   var wss: WebSocketServer | undefined;
@@ -39,7 +40,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      console.log(`${new Date().toLocaleTimeString()} [express] ${logLine}`);
     }
   });
 
@@ -53,71 +54,71 @@ if (!global.serverStarted) {
     try {
       const server = await registerRoutes(app);
 
-    // Configuración WebSocket
-    if (!global.wss) {
-      global.wss = new WebSocketServer({ noServer: true });
+      // Configuración WebSocket
+      if (!global.wss) {
+        global.wss = new WebSocketServer({ noServer: true });
 
-      global.wss.on('connection', (ws) => {
-        console.log('Nueva conexión WebSocket establecida');
+        global.wss.on('connection', (ws) => {
+          console.log('Nueva conexión WebSocket establecida');
 
-        ws.on('message', (message) => {
-          try {
-            const data = JSON.parse(message.toString());
-            console.log('Mensaje WebSocket recibido:', data);
-          } catch (error) {
-            console.error('Error al procesar mensaje WebSocket:', error);
+          ws.on('message', (message) => {
+            try {
+              const data = JSON.parse(message.toString());
+              console.log('Mensaje WebSocket recibido:', data);
+            } catch (error) {
+              console.error('Error al procesar mensaje WebSocket:', error);
+            }
+          });
+
+          ws.on('close', () => {
+            console.log('Conexión WebSocket cerrada');
+          });
+
+          ws.on('error', (error) => {
+            console.error('Error en WebSocket:', error);
+          });
+        });
+      }
+
+      // Manejador de upgrade (WebSocket)
+      if (!global.upgradeListenerAdded) {
+        server.removeAllListeners('upgrade');
+
+        server.on('upgrade', (req, socket, head) => {
+          if (req.url === '/ws') {
+            if (!socket.destroyed) {
+              global.wss!.handleUpgrade(req, socket, head, (ws) => {
+                global.wss!.emit('connection', ws, req);
+              });
+            }
+          } else {
+            socket.destroy();
           }
         });
+        global.upgradeListenerAdded = true;
+      }
 
-        ws.on('close', () => {
-          console.log('Conexión WebSocket cerrada');
-        });
+      // Servir archivos estáticos
+      const staticPath = path.resolve(import.meta.dirname, "public");
+      app.use(express.static(staticPath));
 
-        ws.on('error', (error) => {
-          console.error('Error en WebSocket:', error);
-        });
+      // Ruta catch-all para SPA
+      app.use("*", (_req, res) => {
+        res.sendFile(path.resolve(staticPath, "index.html"));
       });
-    }
 
-    // Manejador de upgrade (WebSocket)
-    if (!global.upgradeListenerAdded) {
-      // Eliminamos cualquier listener previo para evitar duplicados
-      server.removeAllListeners('upgrade');
-
-      server.on('upgrade', (req, socket, head) => {
-        if (req.url === '/ws') {
-          if (!socket.destroyed) {  // Verificamos que el socket no esté cerrado
-            global.wss!.handleUpgrade(req, socket, head, (ws) => {
-              global.wss!.emit('connection', ws, req);
-            });
-          }
-        } else {
-          socket.destroy();
-        }
+      // Iniciar servidor
+      const port = parseInt(process.env.PORT || "10000");
+      server.listen(port, "0.0.0.0", () => {
+        console.log(`${new Date().toLocaleTimeString()} [express] Servidor activo en http://0.0.0.0:${port}`);
+        console.log(`Environment: ${process.env.NODE_ENV}`);
+        console.log(`Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
+        console.log(`Port: ${port}`);
       });
-      global.upgradeListenerAdded = true;
-    }
 
-    // Configuración Vite para desarrollo o archivos estáticos para producción
-    if (app.get("env") === "development") {
-      await setupVite(app, server);
-    } else {
-      serveStatic(app);
-    }
-
-    // Iniciar servidor
-    const port = parseInt(process.env.PORT || "10000");
-    server.listen(port, "0.0.0.0", () => {
-      log(`Servidor activo en http://0.0.0.0:${port}`);
-      console.log(`Environment: ${process.env.NODE_ENV}`);
-      console.log(`Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
-      console.log(`Port: ${port}`);
-    });
-
-    // Handle server errors
-    server.on('error', (err) => {
-      console.error('Server error:', err);
-    });
+      server.on('error', (err) => {
+        console.error('Server error:', err);
+      });
 
     } catch (error) {
       console.error('Error starting server:', error);
