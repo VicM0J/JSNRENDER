@@ -50,7 +50,8 @@ if (!global.serverStarted) {
   global.serverStarted = true;
 
   (async () => {
-    const server = await registerRoutes(app);
+    try {
+      const server = await registerRoutes(app);
 
     // Configuración WebSocket
     if (!global.wss) {
@@ -112,6 +113,16 @@ if (!global.serverStarted) {
     }, () => {
       log(`Servidor activo en http://0.0.0.0:${port}`);
     });
+
+    // Handle server errors
+    server.on('error', (err) => {
+      console.error('Server error:', err);
+    });
+
+    } catch (error) {
+      console.error('Error starting server:', error);
+      process.exit(1);
+    }
   })();
 } else {
   console.log('Servidor ya está iniciado — No se inicia otra vez');
