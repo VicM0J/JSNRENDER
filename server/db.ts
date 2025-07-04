@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { Pool } from 'pg';
+import * as schema from '@shared/schema';
 
 // Configuración de la base de datos para PostgreSQL en Render
 const connectionString = process.env.DATABASE_URL || 
@@ -13,7 +14,7 @@ const client = postgres(connectionString, {
   connect_timeout: 10
 });
 
-export const db = drizzle(client);
+export const db = drizzle(client, { schema });
 
 // Pool para sesiones (express-session requiere pg.Pool)
 export const pool = new Pool({
