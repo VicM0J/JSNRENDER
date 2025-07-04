@@ -99,7 +99,7 @@ if (!global.serverStarted) {
       }
 
       // Servir archivos estáticos
-      const staticPath = path.resolve(import.meta.dirname, "public");
+      const staticPath = path.resolve(import.meta.dirname, "../dist/public");
       app.use(express.static(staticPath));
 
       // Ruta catch-all para SPA
