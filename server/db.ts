@@ -14,7 +14,7 @@ if (!databaseUrl) {
 
 export const pool = new Pool({ 
   connectionString: databaseUrl,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: databaseUrl.includes('render.com') ? { rejectUnauthorized: false } : false
 });
 
 export const db = drizzle({ client: pool, schema });
