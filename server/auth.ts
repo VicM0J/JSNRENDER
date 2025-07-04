@@ -39,7 +39,7 @@ export function authenticateToken(req: any, res: any, next: any) {
 
 export function setupAuth(app: Express) {
   const PostgresSessionStore = connectPg(session);
-  
+
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || 'jasana-secret-key-12345',
     resave: false,
@@ -80,7 +80,7 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res, next) => {
     try {
       const { username, password, name, area, adminPassword } = req.body;
-      
+
       const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ message: "Usuario ya existe" });
@@ -91,7 +91,7 @@ export function setupAuth(app: Express) {
         if (!adminUser || !adminPassword) {
           return res.status(400).json({ message: "Se requiere clave de admin" });
         }
-        
+
         const isAdminPasswordValid = await comparePasswords(adminPassword, adminUser.password);
         if (!isAdminPasswordValid) {
           return res.status(400).json({ message: "Contraseña no valida" });
@@ -138,7 +138,7 @@ export function setupAuth(app: Express) {
 
       const { userId, newPassword } = req.body;
       const hashedPassword = await hashPassword(newPassword);
-      
+
       await storage.resetUserPassword(userId, hashedPassword);
       res.json({ message: "Se restablecio la contraseña" });
     } catch (error) {
