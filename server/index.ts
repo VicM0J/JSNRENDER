@@ -108,7 +108,7 @@ if (!global.serverStarted) {
       }
 
       // Iniciar servidor
-      const port = parseInt(process.env.PORT || "10000");
+      const port = parseInt(process.env.PORT || "5000");
       server.listen(port, "0.0.0.0", () => {
         console.log(`${new Date().toLocaleTimeString()} [express] Servidor activo en http://0.0.0.0:${port}`);
         console.log(`Environment: ${process.env.NODE_ENV}`);

@@ -47,7 +47,7 @@ export default function AuthPage() {
         <div className="w-full max-w-md rounded-2xl shadow-xl p-10">
           <div className="text-center mb-10">
             <img
-              src="./../../public/LogoJASANA.png"
+              src="/LogoJASANA.png"
               alt="JASANA Logo"
               className="mx-auto w-35 h-35 object-contain mb-4"
               draggable={false}
