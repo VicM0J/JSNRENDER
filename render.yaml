@@ -1,0 +1,14 @@
+
+services:
+  - type: web
+    name: jasana-ordenes
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: postgresql://victor:ITt1d5ZDTRegrHN6h0BltBplWsug5WPS@dpg-d1k4gvvdiees73e2idmg-a.virginia-postgres.render.com/jasanaordenes_z9o2
+      - key: SESSION_SECRET
+        value: 6e9f8a7c3b1d4e2f9a0c7b8d5e3f2a1c4b7d9e0f6a8c3d2b1e4f7a9c0d3b5e2

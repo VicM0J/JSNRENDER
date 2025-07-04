@@ -111,6 +111,7 @@ if (!global.serverStarted) {
       log(`Servidor activo en http://0.0.0.0:${port}`);
       console.log(`Environment: ${process.env.NODE_ENV}`);
       console.log(`Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
+      console.log(`Port: ${port}`);
     });
 
     // Handle server errors
