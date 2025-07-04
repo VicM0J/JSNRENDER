@@ -4,9 +4,9 @@ import * as schema from "@shared/schema";
 
 const { Pool } = pg;
 
-// La base de datos en Render se llama jasanaordenes_z9o2
+// URL de la base de datos principal
 const databaseUrl = process.env.DATABASE_URL || 
-  "postgresql://victor:ITt1d5ZDTRegrHN6h0BltBplWsug5WPS@dpg-d1k4gvvdiees73e2idmg-a.virginia-postgres.render.com/jasanaordenes_z9o2";
+  "postgresql://victor:6EPaBaXniEn8x1rAy6YnZzsSuRO7ueKy@dpg-d1k134vdiees73cljhb0-a.virginia-postgres.render.com/jasanaordenes";
 
 if (!databaseUrl) {
   throw new Error(
