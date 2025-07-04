@@ -1,6 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://victor:6EPaBaXniEn8x1rAy6YnZzsSuRO7ueKy@dpg-d1k134vdiees73cljhb0-a.virginia-postgres.render.com/jasanaordenes";
+const DATABASE_URL = process.env.DATABASE_URL || "postgresql://victor:ITt1d5ZDTRegrHN6h0BltBplWsug5WPS@dpg-d1k4gvvdiees73e2idmg-a/jasanaordenes_z9o2";
 
 if (!DATABASE_URL) {
   throw new Error("DATABASE_URL, ensure the database is provisioned");
