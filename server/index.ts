@@ -52,6 +52,10 @@ if (!global.serverStarted) {
 
   (async () => {
     try {
+      // Probar conexión a la base de datos al inicio
+      const { testConnection } = await import("./db");
+      await testConnection();
+      
       const server = await registerRoutes(app);
 
       // Configuración WebSocket
